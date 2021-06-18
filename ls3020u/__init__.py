@@ -31,7 +31,7 @@ class LS3020U:
     CTL1_LED_TEST = 1 << 4 # enables all segments immediately, no refresh needed
     CTL1_HEX_MODE = 1 << 5 # enables hex decoder, 0 restores direct segment control
 
-    CTL2_RESET1 = 1 << 0 # clears display + everything in ctl1 and ctl2 (including what's sent in ctl2 alongside); intensity is retained
+    CTL2_RESET = 1 << 0 # clears display + everything in ctl1 and ctl2 (including what's sent in ctl2 alongside); intensity is retained
     CTL2_RESET2 = 1 << 1 # same as reset, but allows other flags in ctl2 to be applied
     CTL2_AUTO_REFRESH = 1 << 4 # makes all changes gated by CTL1_REFRESH occur immediately
 
@@ -56,8 +56,8 @@ class LS3020U:
 
         self.ctl1 = 0
         self.ctl2 = 0
+        self.bus.write_byte_data(self.I2C_ADDRESS, self.REG_CONTROL2, self.ctl2 | self.CTL2_RESET)
         self.bus.write_byte_data(self.I2C_ADDRESS, self.REG_CONTROL1, self.ctl1)
-        self.bus.write_byte_data(self.I2C_ADDRESS, self.REG_CONTROL2, self.ctl2)
 
         self._writeDigits([0, 0])
         self._triggerRefreshOptional()
